@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.aim</groupId>
+  <artifactId>integracionEclipse</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+	<properties>
+	    <maven.compiler.release>21</maven.compiler.release>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <allure.version>2.29.0</allure.version> <!-- se crea etiqueta , luego si se actuyaliza una version solo se cambia aqui,luego en dependencies se llama -->
+	    <aspectj.version>1.9.22</aspectj.version>
+	    <!-- Aquí agregas la propiedad para que Allure use target/allure-results -->
+	    <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+	</properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-bom</artifactId>
+                <version>${allure.version}</version><!-- se llama a la etiqueta de variable version -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.11.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Selenium -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.38.0</version>
+        </dependency>
+
+        <!-- WebDriverManager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>6.3.2</version>
+        </dependency>
+
+        <!-- Commons IO -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.21.0</version>
+        </dependency>
+
+        <!-- Allure JUnit 5 -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Logger simple 
+        es una fachada de logging: una capa intermedia que permite a tu
+        código usar un API de log genérico, mientras que debajo puedes enchufar distintas implementaciones-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.16</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <release>21</release>
+                </configuration>
+            </plugin>
+
+            <!-- Surefire -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>3.5.2</version>
+			    <configuration>
+			        <testFailureIgnore>false</testFailureIgnore>
+			        <argLine>
+			            -Dfile.encoding=${project.build.sourceEncoding}
+			            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+			        </argLine>
+			        <!-- Aquí fuerzas la ruta de allure-results -->
+			        <systemPropertyVariables>
+			            <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+			        </systemPropertyVariables>
+			    </configuration>
+			    <dependencies>
+			        <dependency>
+			            <groupId>org.aspectj</groupId>
+			            <artifactId>aspectjweaver</artifactId>
+			            <version>${aspectj.version}</version>
+			        </dependency>
+			    </dependencies>
+			</plugin>
+
+            <!-- Allure Maven -->	
+			<plugin>
+    			<groupId>io.qameta.allure</groupId>
+    			<artifactId>allure-maven</artifactId>
+    			<version>2.10.0</version>
+    			<configuration><!-- de donde Allure Maven vera los resultados para generar el reporte
+			    				${project.build.directory} = C:\Users\galex\eclipse-workspace\integracionEclipse\target
+ 								-->
+        		<resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+		        <reportVersion>${allure.version}</reportVersion>
+			    </configuration>
+			</plugin>
+        </plugins>
+    </build>
+</project>
