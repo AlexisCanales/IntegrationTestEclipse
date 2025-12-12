@@ -119,7 +119,7 @@
 			    				${project.build.directory} = C:\Users\galex\eclipse-workspace\integracionEclipse\target
  								-->
         		<resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
-		        <reportVersion>${allure.version}</reportVersion>
+		        <reportVersion>${allure.version}</reportVersion> <!-- que use la misma versión de Allure que tus dependencias  -->
 			    </configuration>
 			</plugin>
         </plugins>
